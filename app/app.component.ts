@@ -1,71 +1,78 @@
-import {Component, OnInit} from '@angular/core';
-import {Observable} from 'rxjs/Observable';
-import {Subject} from 'rxjs/Subject';
-import {BehaviorSubject} from 'rxjs/BehaviorSubject';
-import 'rxjs/add/operator/map';
+import {Component, OnInit, ViewChild, ElementRef} from '@angular/core';
 
+
+import * as rx from "rxjs/Rx";
+import {BehaviorSubject, Subject} from "rxjs/Rx";
 
 @Component({
   selector: 'my-app',
   template: `<h1>My First Angular 2 App</h1>
-    <div>Values: {{values.toString()}}</div>
-      <div>Errors? {{anyErrors}}</div>
-      <div>Finished? {{finished}}</div>
-                <button (click)="run()">add</button>
-             <ul>
-                 <li *ngFor="let item of data | async"> {{ item }}</li>
-            </ul>            
+                 
 `
 })
 export class AppComponent implements OnInit {
-  //list:Observable<Array<string>>;
-  data: Observable<Array<number>>;
-  values: number[] = [];
-  anyErrors: boolean;
-  finished: boolean;
 
+  msg:Subject<any> = new Subject<any>();
 
   constructor() {
-    //  this.list = Observable<Array<string>>;
-    //  this.data = new Subject();
-
-    this.data = new Observable(observer => {
-      setTimeout(() => {
-        observer.next([1,2,3]);
-      }, 1000);
-      setTimeout(() => {
-        observer.next([4]);
-      }, 2000);
-
-      setTimeout(() => {
-        observer.complete();
-      }, 3000);
-    });
-
-    let subscription = this.data.flatMap( i => {
-      let nn = i;
-    }).subscribe(
-      value => this.values.push(value),
-      error => this.anyErrors = true,
-      () => this.finished = true
-    );
-
   }
 
 
   ngOnInit() {
-    this.data.subscribe(val => {
-      let i = val;
+
+
+    let s = rx.Observable.of(1, 2, 3, 4).finally(()=> {
+      debugger
     });
-  //  this.list = this.data.next('2');
+    // let s = rx.Observable.throw(new Error('err'));
+    // let p = rx.Observable.range(4,5);
+    // let p = s.publish();
+
+    // let s = rx.Observable.from([1,2,3,4]);
+    /* var arrayLike = new Map([['name1', 1], ['name2', 2]]);
+     var s = rx.Observable.from(arrayLike);*/
+    //let s = rx.Observable.from([1,2,3,4]);
+    /* let s = rx.Observable.create(obs => {
+     setTimeout(()=> {
+     obs.next('test');
+     }, 1000);
+
+     setTimeout(()=> {
+     obs.next('2');
+     }, 2000);
+
+     })*/
+
+    /*    p.subscribe(val => {
+     debugger
+     }, (err)=>{
+     debugger
+     }, ()=>{
+     debugger
+     });
+
+     setTimeout(()=> {
+     debugger
+     // p.connect();
+     }, 1000);
+
+     setTimeout(()=> {
+     p.subscribe(val => {
+     debugger
+     }, (err)=>{
+     debugger
+     }, ()=>{
+     debugger
+     });
+     }, 4000);*/
+
+    s.flatMap(val=> {
+      return rx.Observable.of(val)
+    }).subscribe(val => {
+      debugger
+    })
+
+
   }
-
-  private i = 0;
-
-  run() {
-
-
-  }
-
 
 }
